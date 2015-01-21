@@ -32,14 +32,17 @@ namespace static_containers
 			}
 		}
 
-		template <typename ValueType, ValueType First, ValueType ... Rest > 
+		template <typename ValueType, ValueType First, ValueType ... Rest> 
 		struct _static_set 
 		{
-			typedef boost::mpl::fold<
-				boost::mpl::set_c<typename ValueType, First, Rest...>,
-				boost::mpl::set0_c<typename ValueType>,
-				boost::mpl::insert<boost::mpl::_1, boost::mpl::_2 >> unique_check;
-			BOOST_MPL_ASSERT_RELATION(boost::mpl::size<unique_check::type>::value, == , (sizeof...(Rest)+1));
+			typedef typename boost::mpl::fold<
+						boost::mpl::set_c<ValueType, First, Rest...>,
+						boost::mpl::set0_c<ValueType>, 
+						boost::mpl::insert<boost::mpl::_1, boost::mpl::_2>
+									>::type unique_check;
+
+			BOOST_MPL_ASSERT_RELATION(boost::mpl::size<unique_check>::value, == ,(sizeof...(Rest)+1));
+
 		};
 
 		template <typename ValueType, ValueType First, ValueType ... Rest>
@@ -47,6 +50,7 @@ namespace static_containers
 		{
 			return _lookup_stage2(i, First, Rest...);
 		}
+
 	}
 
 	//+++++++++++++++
@@ -60,5 +64,5 @@ namespace static_containers
 		return details::_lookup_stage1(i, StaticSet());
 	}
 
-	//----------------
 }
+	//----------------
